@@ -8,12 +8,17 @@ include $(DEVKITARM)/ds_rules
 
 TARGET := ds_farm_v8
 BUILD := build
+SOURCES := source
+INCLUDES := include
 
-ARCH := -march=armv5te -mtune=arm946e-s
-CFLAGS := -g -Wall -O2 $(ARCH)
-CFLAGS += -DARM9
+ARCH := -march=armv5te -mtune=arm946e-s -mthumb
 
+CFLAGS := -g -Wall -O2 -ffunction-sections -fdata-sections $(ARCH)
+CFLAGS += $(INCLUDE) -DARM9
+
+CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS := -g $(ARCH)
+
 LDFLAGS := -specs=ds_arm9.specs -g $(ARCH)
 
 LIBS := -lnds9
@@ -22,23 +27,23 @@ LIBDIRS := $(LIBNDS)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 
 export OUTPUT := $(CURDIR)/$(TARGET)
-export VPATH := $(CURDIR)/source
+export VPATH := $(CURDIR)/$(SOURCES)
 export DEPSDIR := $(CURDIR)/$(BUILD)
 
-CFILES := main.c
-export OFILES := main.o
+CFILES := $(notdir $(wildcard $(CURDIR)/$(SOURCES)/*.c))
+export OFILES := $(CFILES:.c=.o)
 
-export INCLUDE := -I$(CURDIR)/include \
+export LD := $(CC)
+
+export INCLUDE := $(foreach dir,$(INCLUDES),-iquote $(CURDIR)/$(dir)) \
                   $(foreach dir,$(LIBDIRS),-I$(dir)/include) \
                   -I$(CURDIR)/$(BUILD)
 
 export LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-export LD := $(CC)
-
 .PHONY: all clean build
 
-all: build
+all: $(BUILD)
 
 build:
 	@mkdir -p $@
