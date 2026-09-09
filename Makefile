@@ -46,11 +46,11 @@ export LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 all: $(BUILD)
 
 build:
-	@mkdir -p $@
-	@$(MAKE) --no-print-directory -C $@ -f $(CURDIR)/Makefile
+	mkdir -p $@
+	$(MAKE) --no-print-directory -C $@ -f $(CURDIR)/Makefile
 
 clean:
-	@rm -rf $(BUILD) $(TARGET).elf $(TARGET).nds
+	rm -rf $(BUILD) $(TARGET).elf $(TARGET).nds
 
 else
 
