@@ -6,7 +6,7 @@ endif
 
 include $(DEVKITARM)/ds_rules
 
-TARGET := ds_farm_v6
+TARGET := ds_farm_v8
 BUILD := build
 SOURCES := source
 INCLUDES := include
