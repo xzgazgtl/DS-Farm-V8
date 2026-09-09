@@ -1,0 +1,26 @@
+name: Build DS Farm V8
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: devkitpro/devkitarm
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Compilar
+        run: |
+          make clean
+          make
+
+      - name: Salvar NDS
+        uses: actions/upload-artifact@v4
+        with:
+          name: ds-farm-v8
+          path: "*.nds"
